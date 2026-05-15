@@ -23,6 +23,7 @@ export default function ProductAddForm({
     color: "",
     description: "",
     grade: "silver",
+    stock: "0",
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
 
@@ -77,6 +78,7 @@ export default function ProductAddForm({
         image_url: imageUrl,
         id: user.id,
         grade: formData.grade,
+        stock: parseInt(formData.stock),
       });
 
       if (error) throw error;
@@ -90,6 +92,7 @@ export default function ProductAddForm({
         color: "",
         description: "",
         grade: "silver",
+        stock: "0",
       });
       setImageFile(null);
       onProductAdded();
@@ -192,19 +195,32 @@ export default function ProductAddForm({
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                노출 등급
+                총 수량*
               </label>
-              <select
-                name="grade"
-                value={formData.grade}
+              <input
+                name="stock"
+                type="number"
+                required
+                value={formData.stock}
                 onChange={handleInputChange}
-                className="w-full border rounded px-3 py-2 text-sm bg-white"
-              >
-                <option value="silver">Silver (전체 공개)</option>
-                <option value="gold">Gold (골드 회원 전용)</option>
-                <option value="admin">Admin (운영자 전용)</option>
-              </select>
+                className="w-full border rounded px-3 py-2 text-sm"
+              />
             </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              노출 등급
+            </label>
+            <select
+              name="grade"
+              value={formData.grade}
+              onChange={handleInputChange}
+              className="w-full border rounded px-3 py-2 text-sm bg-white"
+            >
+              <option value="silver">Silver (전체 공개)</option>
+              <option value="gold">Gold (골드 회원 전용)</option>
+              <option value="admin">Admin (운영자 전용)</option>
+            </select>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
