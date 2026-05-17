@@ -1,4 +1,4 @@
-create policy "Public read access"
-on storage.objects
-for select
-using (bucket_id = 'product-images');
+create trigger trigger_set_reply_id
+before insert on comments_reply
+for each row
+execute function set_reply_id_before_insert();

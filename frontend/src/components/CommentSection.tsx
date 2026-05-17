@@ -13,6 +13,7 @@ interface Comment {
   image_url: string | null;
   parent_id: string | null;
   created_at: string;
+  reply_id: string;
   replies?: Comment[];
 }
 
@@ -30,9 +31,10 @@ export default function CommentSection({
 
   const fetchComments = useCallback(async () => {
     const { data, error } = await supabase
-      .from("comments")
+      .from("comments_reply")
       .select("*")
       .eq("product_id", product_number)
+      .order("reply_id", { ascending: true })
       .order("created_at", { ascending: true });
 
     if (error) {
@@ -49,18 +51,24 @@ export default function CommentSection({
     });
 
     data.forEach((comment: any) => {
-      if (comment.parent_id && commentMap[comment.parent_id]) {
-        commentMap[comment.parent_id].replies?.push(commentMap[comment.id]);
+      if (comment.parent_id && comment.user_id) {
+        console.log("2");
+        if (comment != undefined) {
+          commentMap[comment.id].replies?.push(comment);
+          rootComments.push(commentMap[comment.id]);
+        }
       } else {
         rootComments.push(commentMap[comment.id]);
+        console.log("3");
       }
     });
-
+    // console.log(rootComments);
     setComments(rootComments);
   }, [product_number]);
 
   useEffect(() => {
     fetchComments();
+    console.log(comments);
   }, [fetchComments]);
 
   const handleUploadImage = async (file: File) => {
@@ -84,6 +92,7 @@ export default function CommentSection({
   const handleSubmit = async (
     e: React.FormEvent,
     parentId: string | null = null,
+    replyid: string | null = null,
   ) => {
     e.preventDefault();
     if (!user || !newComment.trim()) return;
@@ -95,13 +104,14 @@ export default function CommentSection({
         imageUrl = await handleUploadImage(imageFile);
       }
 
-      const { error } = await supabase.from("comments").insert({
+      const { error } = await supabase.from("comments_reply").insert({
         product_id: product_number,
-        user_id: user.id,
+        user_id: parentId,
         user_email: user.email,
         content: newComment,
         image_url: imageUrl,
-        parent_id: parentId,
+        parent_id: user.id,
+        reply_id: replyid,
       });
 
       if (error) throw error;
@@ -168,7 +178,7 @@ export default function CommentSection({
 
       {replyingTo === comment.id && (
         <form
-          onSubmit={(e) => handleSubmit(e, comment.id)}
+          onSubmit={(e) => handleSubmit(e, comment.parent_id, comment.id)}
           className="mt-4 bg-gray-50 p-3 rounded-lg"
         >
           <textarea
@@ -195,11 +205,6 @@ export default function CommentSection({
           </div>
         </form>
       )}
-
-      {comment.replies &&
-        comment.replies.map((reply) => (
-          <CommentItem key={reply.id} comment={reply} isReply={true} />
-        ))}
     </div>
   );
 
@@ -260,9 +265,13 @@ export default function CommentSection({
       )}
 
       <div className="space-y-2">
-        {comments.map((comment) => (
-          <CommentItem key={comment.id} comment={comment} />
-        ))}
+        {comments.map((comment) =>
+          comment.replies?.length ? (
+            <CommentItem key={comment.id} comment={comment} isReply={true} />
+          ) : (
+            <CommentItem key={comment.id} comment={comment} isReply={false} />
+          ),
+        )}
         {comments.length === 0 && (
           <p className="text-center py-10 text-gray-400 text-sm">
             첫 번째 댓글을 남겨보세요!
