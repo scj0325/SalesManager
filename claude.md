@@ -49,10 +49,12 @@ CONTEXT.md 규칙
 * docs/DOMAIN-COMMON-STATUTE.md : 공통 도메인 규칙
 * docs/DOMAIN-MEMBER-CONSTITUTION.md : 회원 도메인 원칙
 * docs/DOMAIN-MEMBER-STATUTE.md : 회원 도메인 규칙
-
----
-
-## 기록
+* docs/DOMAIN-PRODUCT-CONSTITUTION.md : 상품 도메인 원칙
+* docs/DOMAIN-PRODUCT-STATUTE.md : 상품 도메인 규칙
+* docs/DOMAIN-GRADE-CONSTITUTION.md : 등급 도메인 원칙
+* docs/DOMAIN-GRADE-STATUTE.md : 등급 도메인 규칙
+* docs/DOMAIN-CART-CONSTITUTION.md : 장바구니 도메인 원칙
+* docs/DOMAIN-CART-STATUTE.md : 장바구니 도메인 규칙
 
 * docs/AI-ACTION-LOGS.md : 최근 작업 로그, 최대 100개 유지
 * docs/AI-MAJOR-EVENT.md : 주요 사건 및 의사결정
